@@ -1,0 +1,4 @@
+# env files (can opt-in for committing if needed)
+.env* files are commonly used in Node.js projects to manage environment variables. These files are not typically committed to version control systems like Git because they often contain sensitive information such as API keys, database credentials, and other secrets.
+
+However, there are scenarios where you might want to commit `.env` files

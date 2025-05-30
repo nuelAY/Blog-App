@@ -16,17 +16,25 @@ export const getBlogById = async (req: Request, res: Response) => {
   }
 };
 
-export const createBlog = async (req: AuthRequest, res: Response) => {
-  const { title, content } = req.body;
+export const createBlog = async (req: Request, res: Response) => {
+  try {
+    const { title, content, category } = req.body;
+    const image = req.file ? req.file.filename : null;
 
-  const blog = await Blog.create({
-    title,
-    content,
-    author: req.user?._id,
-  });
+    const blog = await Blog.create({
+      title,
+      content,
+      category,
+      author: req.user.id,
+      imageUrl: image ? `/uploads/${image}` : null, // optionally store path
+    });
 
-  res.status(201).json(blog);
+    res.status(201).json(blog);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to create blog post' });
+  }
 };
+
 
 export const updateBlog = async (req: AuthRequest, res: Response) => {
   const blog = await Blog.findById(req.params.id);

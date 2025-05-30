@@ -25,6 +25,8 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
       res.status(401).json({ message: 'User not found' });
       return;
     }
+    console.log(jwt.decode(token));
+
 
     req.user = user;
     next();

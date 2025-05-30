@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-
+import path from 'path'
 import authRoutes from './routes/authRoutes';
 import blogRoutes from './routes/blogRoutes';
 
@@ -15,6 +15,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.get('/', (_req, res) => {
   res.send('Blog API is running');
