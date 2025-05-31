@@ -34,7 +34,7 @@ app.get('*', (req, res) => {
 
 
 
-app.get('/', (_req, res) => {
+app.get('*', (_req, res) => {
   res.send('Blog API is running');
 });
 
