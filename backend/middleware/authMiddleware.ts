@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import User, { IUser } from '../models/User';
-// import { Types } from 'mongoose';
 
 export interface AuthRequest extends Request {
-  user?: IUser;
+  file?: any; 
+  user?: IUser;         
 }
 
 export const protect = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
@@ -25,8 +25,6 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
       res.status(401).json({ message: 'User not found' });
       return;
     }
-    console.log(jwt.decode(token));
-
 
     req.user = user;
     next();

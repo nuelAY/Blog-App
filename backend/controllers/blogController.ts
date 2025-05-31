@@ -16,7 +16,7 @@ export const getBlogById = async (req: Request, res: Response) => {
   }
 };
 
-export const createBlog = async (req: Request, res: Response) => {
+export const createBlog = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { title, content, category } = req.body;
     const image = req.file ? req.file.filename : null;
@@ -25,11 +25,11 @@ export const createBlog = async (req: Request, res: Response) => {
       title,
       content,
       category,
-      author: req.user.id,
-      imageUrl: image ? `/uploads/${image}` : null, // optionally store path
+      author: req.user?._id,  // safe access
+      imageUrl: image ? `/uploads/${image}` : null,
     });
 
-    res.status(201).json(blog);
+    res.status(201).json(blog); // ✅ send response
   } catch (err) {
     res.status(500).json({ message: 'Failed to create blog post' });
   }
