@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, '../../frontend/out')));
 
 // 🔁 Fallback: send index.html for any other route
 // ✅ Fallback only for non-API routes
-app.get('*', (req, res) => {
+app.use('/', (req, res) => {
   if (!req.path.startsWith('/api')) {
     res.sendFile(path.join(__dirname, '../../frontend/out/index.html'));
   } else {
@@ -34,7 +34,7 @@ app.get('*', (req, res) => {
 
 
 
-app.get('*', (_req, res) => {
+app.get('/', (_req, res) => {
   res.send('Blog API is running');
 });
 
