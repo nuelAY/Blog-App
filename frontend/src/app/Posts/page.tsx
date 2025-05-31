@@ -3,14 +3,14 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import { fetchAllBlogs, deleteBlog} from '@/app/store/features/postSlice';
+import { fetchAllBlogs, deleteBlog, Blog } from '@/app/store/features/postSlice';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Navbar from '@/app/components/nav';
 import Image from 'next/image';
 import PostModal from '@/app/components/postModal';
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 
 const categories = ['All', 'Technology', 'Lifestyle', 'Education', 'Business'];
 const filters = ['Latest', 'Popular', 'Trending'];
@@ -19,6 +19,7 @@ const mockPosts = [
   {
     _id: 'mock1',
     title: 'The Future of React Server Components',
+    content: 'Content for the future of React server components',
     image: '/images/CODE.jpg',
     author: 'Alice Johnson',
     category: 'Technology',
@@ -26,6 +27,7 @@ const mockPosts = [
   {
     _id: 'mock2',
     title: 'How to Stay Productive as a Developer',
+    content: 'Content for the future of React server components',
     image: '/images/BOY.jpg',
     author: 'John Doe',
     category: 'Lifestyle',
@@ -33,6 +35,7 @@ const mockPosts = [
   {
     _id: 'mock3',
     title: 'The Rise of AI in the Education Sector',
+    content: 'Content for the future of React server components',
     image: '/images/AI.jpg',
     author: 'Sophia Smith',
     category: 'Education',
@@ -40,6 +43,7 @@ const mockPosts = [
   {
     _id: 'mock4',
     title: 'Building a Startup from Scratch',
+    content: 'Content for the future of React server components',
     image: '/images/START-UP.jpg',
     author: 'Michael Lee',
     category: 'Business',
@@ -54,7 +58,8 @@ export default function PostsPage() {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedFilter, setSelectedFilter] = useState('Latest');
-  const [selectedPost, setSelectedPost] = useState(null);
+  const [selectedPost, setSelectedPost] = useState<Blog | null>(null);
+
 
   // Fetch posts on component mount
   useEffect(() => {
@@ -70,24 +75,24 @@ export default function PostsPage() {
     const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-   const handleDelete = async (e: React.MouseEvent, postId: string) => {
-  e.stopPropagation(); // Prevent card click opening modal
+  const handleDelete = async (e: React.MouseEvent, postId: string) => {
+    e.stopPropagation(); // Prevent card click opening modal
 
-  if (postId.startsWith('mock')) {
-    alert("Mock posts can't be deleted.");
-    return;
-  }
-
-  if (confirm('Are you sure you want to delete this post?')) {
-    const result = await dispatch(deleteBlog(postId));
-
-    if (deleteBlog.fulfilled.match(result)) {
-      toast.success('Blog deleted successfully');
-    } else {
-      toast.error(result.payload as string);
+    if (postId.startsWith('mock')) {
+      alert("Mock posts can't be deleted.");
+      return;
     }
-  }
-};
+
+    if (confirm('Are you sure you want to delete this post?')) {
+      const result = await dispatch(deleteBlog(postId));
+
+      if (deleteBlog.fulfilled.match(result)) {
+        toast.success('Blog deleted successfully');
+      } else {
+        toast.error(result.payload as string);
+      }
+    }
+  };
 
 
   return (
@@ -148,51 +153,62 @@ export default function PostsPage() {
 
           {/* Post Cards */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-  {filteredPosts.length > 0 ? (
-    filteredPosts.map((post, index) => (
-      <motion.div
-        key={post._id || index}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.1 }}
-        onClick={() => setSelectedPost(post)}
-        className="cursor-pointer"
-      >
-        <Card className="bg-gray-300 text-gray-900 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition">
-          <div className="relative h-40 w-full">
-            <Image
-              src={post.image || '/images/default-post.jpg'}
-              alt={post.title}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-t-xl"
-            />
-          </div>
-          <div className="p-5">
-            <h2 className="text-xl font-semibold mb-1">{post.title}</h2>
-            <p className="text-sm text-indigo-600 font-medium">Category: {post.category}</p>
-            <div className="flex items-center mt-4">
-              <div className="w-9 h-9 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
-                {post.author?.name ? post.author.name[0] : 'A'}
-              </div>
-              <span className="ml-2 text-sm text-gray-700">
-                By {post.author?.name || 'Unknown'}
-              </span>
-            </div>
-            <button
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post, index) => (
+                <motion.div
+                  key={post._id || index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  onClick={() =>
+                    setSelectedPost({
+                      ...post,
+                      author: typeof post.author === 'string' ? { name: post.author } : post.author,
+                    })
+                  }
+
+                  className="cursor-pointer"
+                >
+                  <Card className="bg-gray-300 text-gray-900 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition">
+                    <div className="relative h-40 w-full">
+                      <Image
+                        src={post.image || '/images/default-post.jpg'}
+                        alt={post.title}
+                        layout="fill"
+                        objectFit="cover"
+                        className="rounded-t-xl"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <h2 className="text-xl font-semibold mb-1">{post.title}</h2>
+                      <p className="text-sm text-indigo-600 font-medium">Category: {post.category}</p>
+                      <div className="flex items-center mt-4">
+                        <div className="w-9 h-9 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
+                          {typeof post.author === 'string'
+                            ? post.author[0]
+                            : post.author?.name
+                              ? post.author.name[0]
+                              : 'A'}
+                        </div>
+                        <span className="ml-2 text-sm text-gray-700">
+                          By {typeof post.author === 'string' ? post.author : post.author?.name || 'Unknown'}
+                        </span>
+                      </div>
+
+                      <button
                         onClick={(e) => handleDelete(e, post._id)}
                         className="top-3 right-3 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm font-semibold mt-5"
                       >
                         Delete
                       </button>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))
+            ) : (
+              <p className="text-white/80 col-span-full">No posts found matching your criteria.</p>
+            )}
           </div>
-        </Card>
-      </motion.div>
-    ))
-  ) : (
-    <p className="text-white/80 col-span-full">No posts found matching your criteria.</p>
-  )}
-</div>
 
         </motion.div>
 

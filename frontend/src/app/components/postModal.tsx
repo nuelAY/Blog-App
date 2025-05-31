@@ -9,9 +9,10 @@ interface PostModalProps {
   onClose: () => void;
   post: {
     title: string;
-    image: string;
-    author: { name: string; _id?: string };
+    content: string;
+    author: { name: string};
     category: string;
+    image: string;
   } | null;
 }
 
@@ -37,7 +38,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
         >
           <div className="relative h-60 w-full">
             <Image
-              src={post.image}
+              src={post.image || '/placeholder.jpg'}
               alt={post.title}
               fill
               objectFit="cover"

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 
 interface AuthState {
-  user: null | { name: string; email: string };
+  user: null | { name: string; email: string; token: string };
   loading: boolean;
   error: string | null;
   token: string | null;
