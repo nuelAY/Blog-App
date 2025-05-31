@@ -36,7 +36,7 @@ export const fetchAllBlogs = createAsyncThunk(
   "blogs/fetchAll",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/blogs");
+      const response = await axios.get("https://blog-v0c9.onrender.com/api/blogs");
       return response.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -51,7 +51,7 @@ export const fetchBlogById = createAsyncThunk(
   "blogs/fetchById",
   async (id: string, thunkAPI) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/blogs/${id}`);
+      const response = await axios.get(`https://blog-v0c9.onrender.com/api/blogs/${id}`);
       return response.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -70,7 +70,7 @@ export const createBlog = createAsyncThunk(
       const token = state.auth.user?.token;
       console.log("Token being sent:", token);
       const response = await axios.post(
-        "http://localhost:5000/api/blogs",
+        "https://blog-v0c9.onrender.com/api/blogs",
         blogData,
         {
           headers: {
@@ -97,7 +97,7 @@ export const updateBlog = createAsyncThunk(
       const state = thunkAPI.getState() as RootState;
       const token = state.auth.user?.token;
       const response = await axios.put(
-        `http://localhost:5000/api/blogs/${id}`,
+        `https://blog-v0c9.onrender.com/api/blogs/${id}`,
         data,
         {
           headers: {
@@ -126,7 +126,7 @@ export const deleteBlog = createAsyncThunk(
         return thunkAPI.rejectWithValue("No token found. Please log in again.");
       }
 
-      await axios.delete(`http://localhost:5000/api/blogs/${id}`, {
+      await axios.delete(`https://blog-v0c9.onrender.com/api/blogs/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
