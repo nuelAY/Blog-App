@@ -1,4 +1,8 @@
 {
-  "build": "npm install",
-  "start": "npm run start:all"
+  "build": {
+    "cmd": "cd frontend && npm install && npm run build && npm run export && cd ../backend && npm install"
+  },
+  "start": {
+    "cmd": "cd backend && node index.js"
+  }
 }
