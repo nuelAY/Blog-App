@@ -15,7 +15,18 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);
+
+// 🖼 Serve uploaded images/files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// 🌐 Serve static frontend
+app.use(express.static(path.join(__dirname, '../../frontend/out')));
+
+// 🔁 Fallback: send index.html for any other route
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/out/index.html'));
+});
+
 
 app.get('/', (_req, res) => {
   res.send('Blog API is running');
