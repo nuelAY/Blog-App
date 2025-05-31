@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: blog-backend
+    env: node
+    buildCommand: |
+      cd frontend && npm install && npm run build
+      cd ../backend && npm install
+    startCommand: node dist/server.js
+    buildFilter:
+      paths:
+        - frontend/**
+        - backend/**
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false  # Add via Render Dashboard
