@@ -23,9 +23,15 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use(express.static(path.join(__dirname, '../../frontend/out')));
 
 // 🔁 Fallback: send index.html for any other route
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/out/index.html'));
+// ✅ Fallback only for non-API routes
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '../../frontend/out/index.html'));
+  } else {
+    res.status(404).json({ message: 'API route not found' });
+  }
 });
+
 
 
 app.get('/', (_req, res) => {
